@@ -11,18 +11,70 @@ const socialIcons = {
   LinkedIn: BriefcaseBusiness,
 };
 
+type Web3FormsResponse = {
+  success?: boolean;
+  message?: string;
+};
+
+const web3FormsAccessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
+
+async function getWeb3FormsAccessKey() {
+  if (web3FormsAccessKey) {
+    return web3FormsAccessKey;
+  }
+
+  const response = await fetch("/api/contact");
+  const result = (await response.json().catch(() => undefined)) as { accessKey?: string; error?: string } | undefined;
+
+  if (!response.ok || !result?.accessKey) {
+    throw new Error(result?.error ?? "Email service is not configured.");
+  }
+
+  return result.accessKey;
+}
+
 export default function Contact() {
   const [formState, setFormState] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("Something went wrong. Please try again.");
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setFormState("loading");
+    setErrorMessage("Something went wrong. Please try again.");
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const name = formData.get("name");
+    const email = formData.get("email");
+    const message = formData.get("message");
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 650));
-      event.currentTarget.reset();
+      const accessKey = await getWeb3FormsAccessKey();
+
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          access_key: accessKey,
+          name,
+          email,
+          message,
+          subject: `New portfolio message from ${name}`,
+          from_name: "Sasmita Pani Portfolio",
+          replyto: email,
+          botcheck: formData.get("botcheck"),
+        }),
+      });
+      const result = (await response.json().catch(() => undefined)) as Web3FormsResponse | undefined;
+
+      if (!response.ok || !result?.success) {
+        throw new Error(result?.message ?? "Something went wrong. Please try again.");
+      }
+
+      form.reset();
       setFormState("success");
-    } catch {
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : "Something went wrong. Please try again.");
       setFormState("error");
     }
   };
@@ -33,7 +85,7 @@ export default function Contact() {
         <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20">
           <div>
             <Reveal>
-              <p className="label-caps">03 — Contact</p>
+              <p className="label-caps">03 - Contact</p>
             </Reveal>
             <Reveal delay={0.12}>
               <h2 className="section-title mt-5 max-w-4xl">Let&apos;s create something quiet and beautiful.</h2>
@@ -62,7 +114,7 @@ export default function Contact() {
                       className="inline-flex items-center gap-2 rounded-full border border-maroon/18 bg-beige px-4 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-maroon transition-colors hover:border-maroon hover:bg-cream"
                     >
                       <Icon size={15} strokeWidth={1.7} aria-hidden />
-                      {social.name} · {social.handle}
+                      {social.name} - {social.handle}
                     </a>
                   );
                 })}
@@ -72,6 +124,8 @@ export default function Contact() {
 
           <Reveal delay={0.22}>
             <form className="space-y-7" aria-label="Contact form" onSubmit={handleSubmit}>
+              <input type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />
+
               {[
                 { id: "name", label: "Name", type: "text" },
                 { id: "email", label: "Email", type: "email" },
@@ -141,7 +195,7 @@ export default function Contact() {
                     className="text-sm font-semibold text-maroon"
                     role="alert"
                   >
-                    Something went wrong. Please try again.
+                    {errorMessage}
                   </motion.p>
                 )}
               </AnimatePresence>
