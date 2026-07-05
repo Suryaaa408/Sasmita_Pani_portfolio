@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Blender, Box, Brush, Gamepad2, Layers, PenTool, type LucideIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { artist, education, skills, tools } from "@/data/content";
@@ -24,7 +25,20 @@ export default function About() {
               <p className="label-caps">01 — About</p>
             </Reveal>
             <Reveal delay={0.12}>
-              <h2 className="section-title mt-5 max-w-2xl">Built for stillness, texture, and story.</h2>
+              <figure className="mt-5 max-w-sm">
+                <div className="relative aspect-[4/5] overflow-hidden border border-maroon/14 bg-sand">
+                  <Image
+                    src={artist.portrait}
+                    alt={artist.portraitAlt}
+                    fill
+                    className="object-cover grayscale-[18%] saturate-[0.9]"
+                    sizes="(max-width: 1024px) 100vw, 24rem"
+                  />
+                </div>
+                <figcaption className="mt-3 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                  {artist.portraitCaption}
+                </figcaption>
+              </figure>
             </Reveal>
           </div>
 

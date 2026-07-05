@@ -1,122 +1,97 @@
 "use client";
 
-import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { motion } from "framer-motion";
 import { artist } from "@/data/content";
 
-const headlineLines = [
-  { text: "Shaping quiet worlds,", accent: "" },
-  { text: "one polygon ", accent: "at a time." },
-];
+const ease = [0.22, 1, 0.36, 1] as const;
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 18 },
+  visible: { opacity: 1, y: 0 },
+};
+
+const sectionStagger = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
 
 export default function Hero() {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const portraitY = useTransform(scrollYProgress, [0, 1], [0, 46]);
-
   return (
-    <section id="home" ref={ref} className="relative isolate min-h-screen overflow-hidden bg-beige">
-      <div className="hero-grain pointer-events-none absolute inset-0 opacity-[0.18]" aria-hidden />
-      <div
-        className="pointer-events-none absolute -right-20 top-24 h-[26rem] w-[26rem] rounded-full bg-maroon/12 blur-3xl"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute left-[-12rem] top-1/3 h-[24rem] w-[24rem] rounded-full bg-cream/70 blur-3xl"
-        aria-hidden
-      />
-
-      {/*
-        Layout note: the hero padding was tightened from a loose section-shell rhythm
-        so the text and portrait sit as one composed first viewport.
-      */}
-      <div className="mx-auto grid min-h-screen max-w-7xl items-center gap-10 px-5 pb-14 pt-24 sm:px-8 sm:pt-28 lg:grid-cols-12 lg:gap-12 lg:px-14 lg:pb-18 lg:pt-24">
-        <div className="relative z-10 lg:col-span-7">
-          <motion.p
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            className="label-caps"
-          >
-            {artist.eyebrow}
-          </motion.p>
-
-          {/*
-            Layout note: the headline is capped to force two editorial lines instead
-            of allowing the large type to collapse into one-word rows.
-          */}
-          <h1 className="display-title mt-5 max-w-[48rem]" aria-label={artist.headline}>
-            {headlineLines.map((line, index) => (
-              <span key={line.text} className="block overflow-hidden pb-2">
-                <motion.span
-                  className="inline-block"
-                  initial={{ y: "105%", opacity: 0 }}
-                  animate={{ y: "0%", opacity: 1 }}
-                  transition={{
-                    duration: 0.62,
-                    delay: index * 0.1,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                  aria-hidden
-                >
-                  {line.text}
-                  {line.accent && <span className="text-maroon">{line.accent}</span>}
-                </motion.span>
-              </span>
-            ))}
-          </h1>
-
+    <section id="home" className="bg-[#F2EBE1] pt-16">
+      <motion.div
+        className="mx-auto max-w-[1200px] px-6 pb-24 pt-[88px] sm:px-10"
+        initial="hidden"
+        animate="visible"
+        variants={sectionStagger}
+        style={{ fontFamily: "var(--font-inter)" }}
+      >
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-[60px_minmax(0,1fr)] md:gap-10 lg:gap-[60px]">
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.58, delay: 0.48, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-7 grid max-w-3xl gap-6 sm:grid-cols-[minmax(0,1fr)_17rem] sm:items-start"
+            variants={fadeUp}
+            transition={{ duration: 0.45, ease }}
+            className="border-l-[0.5px] border-[rgba(40,20,15,0.15)] pl-4 md:pl-0"
           >
-            <p className="max-w-[38rem] text-lg leading-8 text-muted sm:text-xl">{artist.intro}</p>
-            <p className="flex items-start gap-3 border-l-2 border-maroon pl-4 text-sm font-semibold uppercase tracking-[0.18em] text-maroon">
+            <span className="block text-[11px] font-medium uppercase tracking-[0.08em] text-[#8A7A6E] md:pl-4">
+              01
+            </span>
+          </motion.div>
+
+          <div>
+            <motion.p
+              variants={fadeUp}
+              transition={{ duration: 0.45, delay: 0.2, ease }}
+              className="text-[11px] font-medium uppercase tracking-[0.1em] text-[#8A0F0F]"
+            >
+              3D Artist / Portfolio 2025
+            </motion.p>
+
+            <h1 className="mt-6">
               <motion.span
-                className="relative mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-maroon"
-                aria-hidden
+                className="block text-[28px] font-normal italic leading-none tracking-normal text-[#8A7A6E] sm:text-[36px]"
+                style={{ fontFamily: "var(--font-newsreader)" }}
+                variants={fadeUp}
+                transition={{ duration: 0.45, delay: 0, ease }}
               >
-                <motion.span
-                  className="absolute inset-0 rounded-full bg-maroon"
-                  animate={{ opacity: [0.45, 0], scale: [1, 2.4] }}
-                  transition={{ duration: 1.8, repeat: Infinity, ease: [0.22, 1, 0.36, 1] }}
-                />
+                Shaping quiet worlds,
               </motion.span>
-              {artist.status}
-            </p>
-          </motion.div>
-        </div>
+              <motion.span
+                className="mt-4 block max-w-[11ch] text-[76px] font-medium leading-[1.06] tracking-[-0.02em] text-[#201310] sm:text-[112px] lg:text-[132px]"
+                style={{ fontFamily: "var(--font-newsreader)" }}
+                variants={fadeUp}
+                transition={{ duration: 0.48, delay: 0.1, ease }}
+              >
+                one polygon at a time.
+              </motion.span>
+            </h1>
 
-        <motion.figure
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.68, delay: 0.42, ease: [0.22, 1, 0.36, 1] }}
-          className="relative z-10 w-full max-w-[32rem] justify-self-center lg:col-span-5 lg:justify-self-end"
-        >
-          <div className="absolute -bottom-6 -right-6 h-52 w-52 bg-maroon/85" aria-hidden />
-          <div className="absolute -left-5 top-8 h-32 w-24 border border-maroon/35" aria-hidden />
-          <motion.div
-            style={{ y: portraitY }}
-            className="relative aspect-[4/5] overflow-hidden border border-maroon/25 bg-sand shadow-[0_28px_70px_rgba(92,26,27,0.22)]"
-          >
-            <Image
-              src={artist.portrait}
-              alt={artist.portraitAlt}
-              fill
-              className="object-cover grayscale-[12%] saturate-[0.9]"
-              sizes="(max-width: 1024px) 100vw, 40vw"
-              priority
+            <motion.div
+              variants={fadeUp}
+              transition={{ duration: 0.45, delay: 0.24, ease }}
+              className="mt-10 border-b-[0.5px] border-[rgba(40,20,15,0.15)]"
             />
-          </motion.div>
-          <figcaption className="mt-4 flex items-center justify-between gap-4 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-muted">
-            <span>2025</span>
-            <span>{artist.portraitCaption}</span>
-          </figcaption>
-        </motion.figure>
-      </div>
+
+            <motion.div
+              variants={fadeUp}
+              transition={{ duration: 0.5, delay: 0.3, ease }}
+              className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,40ch)_minmax(220px,1fr)] lg:gap-[60px]"
+            >
+              <p className="max-w-[40ch] text-[14px] font-normal leading-7 text-[#5C4C42]">{artist.intro}</p>
+
+              <div>
+                <p className="text-[11px] font-medium uppercase tracking-[0.1em] text-[#8A7A6E]">Status</p>
+                <p className="mt-4 flex max-w-[32ch] items-start gap-3 text-[14px] font-medium leading-6 text-[#201310]">
+                  <span className="mt-[7px] h-2 w-2 shrink-0 rounded-full bg-[#8A0F0F]" aria-hidden />
+                  {artist.status}
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </motion.div>
     </section>
   );
 }
