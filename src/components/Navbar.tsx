@@ -1,93 +1,106 @@
+"use client";
+
 import Link from "next/link";
+import { Menu, X } from "lucide-react";
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { artist, navLinks } from "@/data/content";
 
-function PhoneIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      aria-hidden
-    >
-      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
-    </svg>
-  );
-}
-
-function UserIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      aria-hidden
-    >
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-      <circle cx="12" cy="7" r="4" />
-    </svg>
-  );
-}
-
 export default function Navbar() {
-  return (
-    <header className="border-b border-border bg-canvas">
-      <div className="mx-auto max-w-7xl px-6 lg:px-10">
-        <div className="flex items-center justify-between py-5">
-          <Link
-            href="/"
-            className="text-sm font-bold uppercase tracking-[0.15em] text-ink"
-          >
-            Avision
-          </Link>
+  const [active, setActive] = useState("home");
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
 
-          <nav className="hidden items-center gap-8 md:flex" aria-label="Main">
-            {navLinks.map((link) => (
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20);
+      const current = navLinks.findLast((link) => {
+        const section = document.getElementById(link.id);
+        return section ? section.offsetTop - 160 <= window.scrollY : false;
+      });
+      if (current) setActive(current.id);
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <header
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? "border-b border-maroon/10 bg-cream/86 shadow-sm backdrop-blur-xl"
+          : "bg-beige/50 backdrop-blur-sm"
+      }`}
+    >
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-12">
+        <Link
+          href="#home"
+          className="font-display text-xl font-semibold text-maroon"
+          onClick={() => setOpen(false)}
+        >
+          {artist.name}
+        </Link>
+
+        <nav className="hidden items-center gap-8 md:flex" aria-label="Main navigation">
+          {navLinks.map((link) => (
+            <Link
+              key={link.id}
+              href={link.href}
+              className="group relative py-2 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-muted transition-colors hover:text-maroon"
+            >
+              {active === link.id && (
+                <motion.span
+                  layoutId="nav-active"
+                  className="absolute inset-x-0 bottom-0 h-px bg-maroon"
+                  transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                />
+              )}
+              <span className={active === link.id ? "text-maroon" : ""}>{link.label}</span>
+            </Link>
+          ))}
+          <Link
+            href="/admin"
+            className="text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-maroon/55 transition-colors hover:text-maroon"
+          >
+            Admin
+          </Link>
+        </nav>
+
+        <button
+          type="button"
+          className="inline-flex h-10 w-10 items-center justify-center border border-maroon/20 text-maroon md:hidden"
+          onClick={() => setOpen((value) => !value)}
+          aria-label={open ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={open}
+        >
+          {open ? <X size={18} aria-hidden /> : <Menu size={18} aria-hidden />}
+        </button>
+      </div>
+
+      {open && (
+        <motion.nav
+          initial={{ opacity: 0, y: -12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -12 }}
+          className="border-t border-maroon/10 bg-cream px-5 py-5 md:hidden"
+          aria-label="Mobile navigation"
+        >
+          <div className="flex flex-col gap-4">
+            {[...navLinks, { label: "Admin", href: "/admin", id: "admin" }].map((link) => (
               <Link
-                key={link.label}
+                key={link.id}
                 href={link.href}
-                className="text-[11px] font-medium uppercase tracking-[0.18em] text-ink transition-opacity hover:opacity-60"
+                onClick={() => setOpen(false)}
+                className="text-sm font-semibold uppercase tracking-[0.18em] text-maroon"
               >
                 {link.label}
               </Link>
             ))}
-          </nav>
-
-          <div className="flex items-center gap-6">
-            <Link
-              href="#contact"
-              className="hidden items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-ink transition-opacity hover:opacity-60 sm:flex"
-            >
-              <UserIcon />
-              Join Us
-            </Link>
-            <Link
-              href="#contact"
-              className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-ink transition-opacity hover:opacity-60"
-            >
-              <PhoneIcon />
-              Contact
-            </Link>
           </div>
-        </div>
-
-        <nav className="pb-4" aria-label="Breadcrumb">
-          <ol className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-muted">
-            <li>
-              <Link href="#hero" className="transition-opacity hover:text-ink">
-                Talents
-              </Link>
-            </li>
-            <li aria-hidden="true">&gt;</li>
-            <li className="text-ink">{artist.name}</li>
-          </ol>
-        </nav>
-      </div>
+        </motion.nav>
+      )}
     </header>
   );
 }

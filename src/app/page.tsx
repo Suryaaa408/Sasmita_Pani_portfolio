@@ -1,19 +1,21 @@
-import Navbar from "@/components/Navbar";
-import Hero from "@/components/Hero";
-import PortfolioGrid from "@/components/PortfolioGrid";
-import Services from "@/components/Services";
-import PricingTable from "@/components/PricingTable";
+import About from "@/components/About";
+import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import Hero from "@/components/Hero";
+import Navbar from "@/components/Navbar";
+import Work from "@/components/Work";
 
 export default function Home() {
   return (
-    <main>
+    <>
       <Navbar />
-      <Hero />
-      <PortfolioGrid />
-      <Services />
-      <PricingTable />
+      <main>
+        <Hero />
+        <About />
+        <Work />
+        <Contact />
+      </main>
       <Footer />
-    </main>
+    </>
   );
 }

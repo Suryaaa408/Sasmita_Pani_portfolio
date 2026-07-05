@@ -1,165 +1,119 @@
 export const artist = {
   name: "Sasmita Mishra",
-  role: "Illustrator",
-  level: "Professional",
-  categories: ["Illustrator", "Graphic Designer", "Concept Artist"],
-  website: "www.sasmitamishra.com",
-  bio: `Sasmita Mishra is a professional illustrator and visual artist with over eight years of experience creating compelling artwork for publishing, editorial, and brand campaigns. Her work blends traditional illustration techniques with contemporary digital aesthetics, resulting in pieces that feel both timeless and fresh.
-
-She has collaborated with leading publishers, magazines, and creative agencies worldwide, delivering illustrations that tell stories with clarity and emotional depth. From children's book spreads to editorial features and concept art, Sasmita approaches every project with meticulous attention to composition, color, and narrative.
-
-Based in India, she works with clients across the globe, bringing a unique perspective shaped by diverse cultural influences and a passion for visual storytelling.`,
-  social: [
-    { name: "Instagram", href: "https://instagram.com", label: "IG" },
-    { name: "Behance", href: "https://behance.net", label: "BE" },
-    { name: "Dribbble", href: "https://dribbble.com", label: "DR" },
-    { name: "LinkedIn", href: "https://linkedin.com", label: "LI" },
+  eyebrow: "3D Artist · Portfolio 2025",
+  headline: "Shaping quiet worlds, one polygon at a time.",
+  intro:
+    "A character and environment artist building restrained cinematic worlds for games, product stories, and immersive brand moments.",
+  status: "Available for freelance & studio collaborations",
+  portrait: "/About_Image.png",
+  portraitAlt: "Studio portrait of Sasmita Mishra",
+  portraitCaption: "Personal archive, 2025",
+  bio:
+    "Sasmita Mishra is a 3D artist focused on quiet atmosphere, expressive silhouettes, and tactile digital surfaces. Her practice moves between stylized character modeling, environmental storytelling, sculpting, and product visualization, always with an eye for restraint and emotional clarity.",
+  email: "hello@sasmitamishra.com",
+  socials: [
+    { name: "Instagram", href: "https://instagram.com", handle: "@sasmita.3d" },
+    { name: "LinkedIn", href: "https://linkedin.com", handle: "Sasmita Mishra" },
   ],
 };
 
-export const portfolioImages = [
-  { id: 1, src: "https://picsum.photos/seed/art01/400/560", alt: "Abstract geometric illustration" },
-  { id: 2, src: "https://picsum.photos/seed/art02/400/560", alt: "Botanical watercolor study" },
-  { id: 3, src: "https://picsum.photos/seed/art03/400/560", alt: "Character concept sketch" },
-  { id: 4, src: "https://picsum.photos/seed/art04/400/560", alt: "Editorial magazine cover" },
-  { id: 5, src: "https://picsum.photos/seed/art05/400/560", alt: "Pattern design study" },
-  { id: 6, src: "https://picsum.photos/seed/art06/400/560", alt: "Children's book spread" },
-  { id: 7, src: "https://picsum.photos/seed/art07/400/560", alt: "Landscape illustration" },
-  { id: 8, src: "https://picsum.photos/seed/art08/400/560", alt: "Portrait illustration" },
-  { id: 9, src: "https://picsum.photos/seed/art09/400/560", alt: "Typography poster design" },
-  { id: 10, src: "https://picsum.photos/seed/art10/400/560", alt: "Fantasy character art" },
-  { id: 11, src: "https://picsum.photos/seed/art11/400/560", alt: "Minimal line art" },
-  { id: 12, src: "https://picsum.photos/seed/art12/400/560", alt: "Color study composition" },
-];
-
-export type ServiceItem = {
-  id: string;
-  number: string;
-  title: string;
-  subItems?: string[];
-};
-
-export const services: ServiceItem[] = [
-  {
-    id: "book",
-    number: "01",
-    title: "Book Illustrations",
-    subItems: ["Picture Books", "Chapter Books", "Cover Art", "Interior Spreads"],
-  },
-  {
-    id: "editorial",
-    number: "02",
-    title: "Editorial Illustrations",
-    subItems: [
-      "Magazine Covers",
-      "Feature Articles",
-      "Infographics",
-      "Op-Ed Illustrations",
-      "Newspaper Features",
-      "Digital Publications",
-    ],
-  },
-  {
-    id: "branding",
-    number: "03",
-    title: "Branding & Identity",
-    subItems: ["Logo Illustrations", "Brand Mascots", "Packaging Art", "Pattern Design"],
-  },
-  {
-    id: "concept",
-    number: "04",
-    title: "Concept Art",
-    subItems: ["Character Design", "Environment Art", "Prop Design", "Storyboards"],
-  },
-  {
-    id: "custom",
-    number: "05",
-    title: "Custom Commissions",
-    subItems: ["Personal Portraits", "Gift Illustrations", "Wall Murals", "Event Artwork"],
-  },
-  {
-    id: "workshops",
-    number: "06",
-    title: "Workshops & Mentoring",
-    subItems: ["Group Workshops", "One-on-One Sessions", "Portfolio Reviews"],
-  },
-];
-
-export type Package = {
-  number: string;
-  name: string;
-  includes: string[];
-  time: string;
-  price: string;
-};
-
-export const packages: Package[] = [
-  {
-    number: "01",
-    name: "Children's Book Illustration Package",
-    includes: [
-      "20 full-color illustrations",
-      "3 rounds of revisions",
-      "Print-ready files",
-      "Character design sheet",
-    ],
-    time: "14 Days",
-    price: "$5,000",
-  },
-  {
-    number: "02",
-    name: "Editorial Illustration Package",
-    includes: [
-      "1 custom editorial illustration",
-      "2 rounds of revisions",
-      "High-res digital files",
-      "Usage rights for publication",
-    ],
-    time: "7 Days",
-    price: "$2,500",
-  },
-  {
-    number: "03",
-    name: "Brand Identity Illustration",
-    includes: [
-      "5 brand illustrations",
-      "2 style directions",
-      "Vector & raster formats",
-      "Social media adaptations",
-    ],
-    time: "10 Days",
-    price: "$3,500",
-  },
-  {
-    number: "04",
-    name: "Concept Art Package",
-    includes: [
-      "10 concept sketches",
-      "3 refined illustrations",
-      "Mood board & color studies",
-      "Source files included",
-    ],
-    time: "12 Days",
-    price: "$4,000",
-  },
-  {
-    number: "05",
-    name: "Custom Portrait Commission",
-    includes: [
-      "1 custom portrait illustration",
-      "2 rounds of revisions",
-      "High-res print file",
-      "Digital delivery",
-    ],
-    time: "5 Days",
-    price: "$800",
-  },
-];
-
 export const navLinks = [
-  { label: "Studio", href: "#studio" },
-  { label: "Book", href: "#portfolio" },
-  { label: "Talents", href: "#hero" },
-  { label: "Services", href: "#services" },
-  { label: "Gallery", href: "#portfolio" },
+  { label: "Home", href: "#home", id: "home" },
+  { label: "About", href: "#about", id: "about" },
+  { label: "Work", href: "#work", id: "work" },
+  { label: "Contact", href: "#contact", id: "contact" },
+];
+
+export const skills = [
+  "Character modeling",
+  "Environment art",
+  "Digital sculpting",
+  "Look development",
+  "Retopology",
+  "Lighting",
+];
+
+export const tools = [
+  "Blender",
+  "ZBrush",
+  "Substance Painter",
+  "Maya",
+  "Unreal Engine",
+  "Marvelous Designer",
+];
+
+export const education = [
+  {
+    years: "2021 - 2023",
+    title: "MFA, Digital Arts",
+    institution: "National Institute of Design",
+  },
+  {
+    years: "2017 - 2021",
+    title: "BFA, Visual Communication",
+    institution: "Srishti Institute of Art, Design and Technology",
+  },
+];
+
+export const projectCategories = [
+  "All",
+  "Character Modeling",
+  "Environment & Scenes",
+  "Product Visualization",
+  "Sculpting",
+] as const;
+
+export type ProjectCategory = (typeof projectCategories)[number];
+
+export type Project = {
+  id: string;
+  title: string;
+  category: Exclude<ProjectCategory, "All">;
+  image: string;
+  alt: string;
+};
+
+export const projects: Project[] = [
+  {
+    id: "quiet-courier",
+    title: "Quiet Courier",
+    category: "Character Modeling",
+    image: "https://images.unsplash.com/photo-1634986666676-ec8fd927c23d?w=900&h=1200&fit=crop",
+    alt: "Moody 3D character study",
+  },
+  {
+    id: "morning-atelier",
+    title: "Morning Atelier",
+    category: "Environment & Scenes",
+    image: "https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=900&h=1200&fit=crop",
+    alt: "Soft abstract architectural render",
+  },
+  {
+    id: "heirloom-speaker",
+    title: "Heirloom Speaker",
+    category: "Product Visualization",
+    image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=900&h=1200&fit=crop",
+    alt: "Premium speaker product render",
+  },
+  {
+    id: "clay-guardian",
+    title: "Clay Guardian",
+    category: "Sculpting",
+    image: "https://images.unsplash.com/photo-1617791160536-598cf32026fb?w=900&h=1200&fit=crop",
+    alt: "Close sculptural digital form",
+  },
+  {
+    id: "winter-room",
+    title: "Winter Room",
+    category: "Environment & Scenes",
+    image: "https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=900&h=1200&fit=crop",
+    alt: "Minimal 3D room with geometric forms",
+  },
+  {
+    id: "field-mask",
+    title: "Field Mask",
+    category: "Character Modeling",
+    image: "https://images.unsplash.com/photo-1604076913837-52ab5629fba9?w=900&h=1200&fit=crop",
+    alt: "Stylized character mask and material study",
+  },
 ];

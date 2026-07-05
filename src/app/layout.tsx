@@ -1,17 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
 export const metadata: Metadata = {
-  title: "Sasmita Mishra — Illustrator & Visual Artist",
+  title: "Sasmita Mishra — 3D Artist Portfolio",
   description:
-    "Portfolio of Sasmita Mishra — illustrator, graphic designer, and concept artist.",
+    "A quiet, editorial 3D artist portfolio featuring character modeling, environment art, sculpting, and product visualization.",
 };
 
 export default function RootLayout({
@@ -21,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} font-sans`}>{children}</body>
+      <body>{children}</body>
     </html>
   );
 }

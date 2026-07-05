@@ -1,11 +1,15 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-canvas: #f2f2f0;
-  --color-ink: #111111;
-  --color-muted: #6b6b6b;
-  --color-border: #d4d4d0;
-  --font-sans: var(--font-inter);
+  --color-maroon: #5c1a1b;
+  --color-maroon-soft: #7a2426;
+  --color-beige: #f4ede4;
+  --color-cream: #fffaf2;
+  --color-sand: #e8dcc8;
+  --color-ink: #1d1111;
+  --color-muted: #766b63;
+  --font-sans: "Neue Haas Grotesk Text", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Neue Haas Grotesk Display", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -14,21 +18,31 @@
   }
 
   body {
-    @apply bg-canvas text-ink antialiased;
-    font-family: var(--font-sans), system-ui, sans-serif;
+    @apply bg-beige text-ink antialiased;
+    font-family: "Neue Haas Grotesk Text", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+  }
+
+  ::selection {
+    @apply bg-maroon text-cream;
   }
 }
 
 @layer utilities {
+  .section-shell {
+    @apply mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-12 lg:py-28;
+  }
+
   .label-caps {
-    @apply text-[10px] font-medium uppercase tracking-[0.2em] text-muted;
+    @apply text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-maroon;
   }
 
-  .heading-xl {
-    @apply text-3xl font-bold uppercase tracking-tight md:text-4xl lg:text-[2.75rem] lg:leading-tight;
+  .display-title {
+    font-family: "Neue Haas Grotesk Display", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+    @apply text-[clamp(3.2rem,9.5vw,8.5rem)] font-semibold leading-[0.88] tracking-normal;
   }
 
-  .heading-lg {
-    @apply text-2xl font-bold uppercase tracking-tight md:text-3xl;
+  .section-title {
+    font-family: "Neue Haas Grotesk Display", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+    @apply text-[clamp(2.25rem,5.5vw,5.25rem)] font-semibold leading-[0.92] tracking-normal;
   }
 }
