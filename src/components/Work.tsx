@@ -4,8 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-import { KeyboardEvent, useMemo, useRef, useState } from "react";
-import { projectCategories, projects, type Project, type ProjectCategory } from "@/data/content";
+import { KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
+import { projectCategories, type Project, type ProjectCategory } from "@/data/content";
 import { Reveal } from "@/components/Reveal";
 
 function ProjectCard({ project, index }: { project: Project; index: number }) {
@@ -71,10 +71,20 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 
 export default function Work() {
   const [active, setActive] = useState<ProjectCategory>("All");
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+
+  useEffect(() => {
+    fetch("/api/projects")
+      .then((response) => response.json())
+      .then((data: Project[]) => setProjects(data))
+      .finally(() => setLoading(false));
+  }, []);
+
   const filtered = useMemo(
     () => (active === "All" ? projects : projects.filter((project) => project.category === active)),
-    [active],
+    [active, projects],
   );
 
   const handleTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
@@ -150,11 +160,15 @@ export default function Work() {
         </div>
 
         <motion.div layout className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          <AnimatePresence mode="popLayout">
-            {filtered.map((project, index) => (
-              <ProjectCard key={project.id} project={project} index={index} />
-            ))}
-          </AnimatePresence>
+          {loading ? (
+            <p className="text-muted">Loading projects...</p>
+          ) : (
+            <AnimatePresence mode="popLayout">
+              {filtered.map((project, index) => (
+                <ProjectCard key={project.id} project={project} index={index} />
+              ))}
+            </AnimatePresence>
+          )}
         </motion.div>
       </div>
     </section>

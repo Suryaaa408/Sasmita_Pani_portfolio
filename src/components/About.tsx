@@ -1,19 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { Blender, Box, Brush, Gamepad2, Layers, PenTool, type LucideIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { artist, education, skills, tools } from "@/data/content";
 import { Reveal } from "@/components/Reveal";
-
-const toolIcons: Record<string, LucideIcon> = {
-  Blender,
-  ZBrush: Brush,
-  "Substance Painter": Layers,
-  Maya: Box,
-  "Unreal Engine": Gamepad2,
-  "Marvelous Designer": PenTool,
-};
 
 export default function About() {
   return (
@@ -44,7 +34,11 @@ export default function About() {
 
           <div className="space-y-12">
             <Reveal delay={0.18}>
-              <p className="max-w-3xl text-xl leading-9 text-muted">{artist.bio}</p>
+              <div className="max-w-3xl space-y-6 text-xl leading-9 text-muted">
+                {artist.bio.map((paragraph) => (
+                  <p key={paragraph.slice(0, 32)}>{paragraph}</p>
+                ))}
+              </div>
             </Reveal>
 
             <div className="grid gap-10 md:grid-cols-2">
@@ -65,21 +59,24 @@ export default function About() {
               <Reveal delay={0.28}>
                 <h3 className="label-caps">Tools</h3>
                 <ul className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2" aria-label="Tools">
-                  {tools.map((tool) => {
-                    const Icon = toolIcons[tool] ?? Box;
-
-                    return (
-                      <li
-                        key={tool}
-                        className="flex min-h-14 items-center gap-3 border border-maroon/14 bg-beige px-4 py-3 text-sm font-semibold text-maroon"
-                      >
-                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-maroon/15 bg-cream">
-                          <Icon size={16} strokeWidth={1.7} aria-hidden />
-                        </span>
-                        {tool}
-                      </li>
-                    );
-                  })}
+                  {tools.map((tool) => (
+                    <li
+                      key={tool.name}
+                      className="flex min-h-14 items-center gap-3 border border-maroon/14 bg-beige px-4 py-3 text-sm font-semibold text-maroon"
+                    >
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full border border-maroon/15 bg-cream">
+                        <Image
+                          src={tool.icon}
+                          alt=""
+                          width={20}
+                          height={20}
+                          className="h-5 w-5 object-contain"
+                          aria-hidden
+                        />
+                      </span>
+                      {tool.name}
+                    </li>
+                  ))}
                 </ul>
               </Reveal>
             </div>

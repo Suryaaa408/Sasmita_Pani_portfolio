@@ -61,12 +61,6 @@ export default function Navbar() {
                 <span className={active === link.id ? "text-maroon" : ""}>{link.label}</span>
               </Link>
             ))}
-            <Link
-              href="/admin"
-              className="text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-maroon/55 transition-colors hover:text-maroon"
-            >
-              Admin
-            </Link>
           </nav>
 
           <button
@@ -89,7 +83,7 @@ export default function Navbar() {
             aria-label="Mobile navigation"
           >
             <div className="flex flex-col gap-4">
-              {[...navLinks, { label: "Admin", href: "/admin", id: "admin" }].map((link) => (
+              {navLinks.map((link) => (
                 <Link
                   key={link.id}
                   href={link.href}

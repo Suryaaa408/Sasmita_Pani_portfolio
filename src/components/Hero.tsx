@@ -27,7 +27,6 @@ export default function Hero() {
         initial="hidden"
         animate="visible"
         variants={sectionStagger}
-        style={{ fontFamily: "var(--font-inter)" }}
       >
         <div className="grid grid-cols-1 gap-10 md:grid-cols-[60px_minmax(0,1fr)] md:gap-10 lg:gap-[60px]">
           <motion.div
@@ -51,20 +50,18 @@ export default function Hero() {
 
             <h1 className="mt-6">
               <motion.span
-                className="block text-[28px] font-normal italic leading-none tracking-normal text-[#8A7A6E] sm:text-[36px]"
-                style={{ fontFamily: "var(--font-newsreader)" }}
+                className="block text-[28px] font-normal leading-none tracking-normal text-[#8A7A6E] sm:text-[36px]"
                 variants={fadeUp}
                 transition={{ duration: 0.45, delay: 0, ease }}
               >
-                Shaping quiet worlds,
+                SEE THE WORLD IN YOUR PERSPECTIVE
               </motion.span>
               <motion.span
-                className="mt-4 block max-w-[11ch] text-[76px] font-medium leading-[1.06] tracking-[-0.02em] text-[#201310] sm:text-[112px] lg:text-[132px]"
-                style={{ fontFamily: "var(--font-newsreader)" }}
+                className="mt-4 block text-[76px] font-medium leading-[1.06] tracking-[-0.02em] text-maroon sm:text-[112px] lg:text-[132px]"
                 variants={fadeUp}
                 transition={{ duration: 0.48, delay: 0.1, ease }}
               >
-                one polygon at a time.
+                SASMITA PANI
               </motion.span>
             </h1>
 

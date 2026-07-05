@@ -4,29 +4,27 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import { projects } from "@/data/content";
+import { getProjectById } from "@/lib/projects";
+
+export const dynamic = "force-dynamic";
 
 type ProjectPageProps = {
   params: Promise<{ id: string }>;
 };
 
-export function generateStaticParams() {
-  return projects.map((project) => ({ id: project.id }));
-}
-
 export async function generateMetadata({ params }: ProjectPageProps) {
   const { id } = await params;
-  const project = projects.find((item) => item.id === id);
+  const project = await getProjectById(id);
 
   return {
-    title: project ? `${project.title} — Sasmita Mishra` : "Project — Sasmita Mishra",
+    title: project ? `${project.title} — Sasmita Pani` : "Project — Sasmita Pani",
     description: project?.writeup,
   };
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const { id } = await params;
-  const project = projects.find((item) => item.id === id);
+  const project = await getProjectById(id);
 
   if (!project) {
     notFound();
@@ -80,10 +78,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
           <div className="mt-16 grid gap-5 md:grid-cols-2">
             {project.detailImages.map((image, index) => (
-              <figure
-                key={image}
-                className={index === 0 ? "md:col-span-2" : ""}
-              >
+              <figure key={image} className={index === 0 ? "md:col-span-2" : ""}>
                 <div className="relative aspect-[16/10] overflow-hidden border border-maroon/12 bg-sand">
                   <Image
                     src={image}
