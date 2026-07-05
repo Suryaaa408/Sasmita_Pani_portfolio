@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { Project } from "@/data/content";
-import { createProjectId, getProjects, saveProjects } from "@/lib/projects";
+import { createProject, createProjectId, getProjects } from "@/lib/projects";
 
 export async function GET() {
   const projects = await getProjects();
@@ -29,10 +29,9 @@ export async function POST(request: Request) {
       toolsUsed: body.toolsUsed,
     };
 
-    projects.unshift(project);
-    await saveProjects(projects);
+    const created = await createProject(project);
 
-    return NextResponse.json(project, { status: 201 });
+    return NextResponse.json(created, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Failed to create project." }, { status: 500 });
   }

@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FormEvent, useCallback, useEffect, useState } from "react";
-import { ArrowLeft, Pencil, Plus, Trash2 } from "lucide-react";
+import { ChangeEvent, FormEvent, useCallback, useEffect, useState } from "react";
+import { ArrowLeft, Pencil, Plus, Trash2, Upload } from "lucide-react";
 import { projectCategories, type Project } from "@/data/content";
 
 type ProjectFormState = {
@@ -60,12 +60,32 @@ function formToPayload(form: ProjectFormState) {
   };
 }
 
+async function uploadProjectFile(file: File, folder: string) {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("folder", folder);
+
+  const response = await fetch("/api/projects/upload", {
+    method: "POST",
+    body: formData,
+  });
+  const data = (await response.json()) as { url?: string; error?: string };
+
+  if (!response.ok || !data.url) {
+    throw new Error(data.error ?? "Failed to upload file.");
+  }
+
+  return data.url;
+}
+
 export default function AdminPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [form, setForm] = useState<ProjectFormState>(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
+  const [uploadingDetails, setUploadingDetails] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -159,6 +179,53 @@ export default function AdminPage() {
     }
   };
 
+  const handleCoverUpload = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    setUploadingCover(true);
+    setError(null);
+
+    try {
+      const url = await uploadProjectFile(file, form.title || "project-cover");
+      setForm((current) => ({ ...current, image: url, alt: current.alt || file.name.replace(/\.[^.]+$/, "") }));
+      setMessage("Cover image uploaded.");
+    } catch (uploadError) {
+      setError(uploadError instanceof Error ? uploadError.message : "Failed to upload cover image.");
+    } finally {
+      setUploadingCover(false);
+      event.target.value = "";
+    }
+  };
+
+  const handleDetailUploads = async (event: ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files ?? []);
+
+    if (files.length === 0) {
+      return;
+    }
+
+    setUploadingDetails(true);
+    setError(null);
+
+    try {
+      const urls = await Promise.all(files.map((file) => uploadProjectFile(file, form.title || "project-media")));
+      setForm((current) => ({
+        ...current,
+        detailImages: [current.detailImages, ...urls].filter(Boolean).join("\n"),
+      }));
+      setMessage(`${urls.length} media file${urls.length === 1 ? "" : "s"} uploaded.`);
+    } catch (uploadError) {
+      setError(uploadError instanceof Error ? uploadError.message : "Failed to upload media.");
+    } finally {
+      setUploadingDetails(false);
+      event.target.value = "";
+    }
+  };
+
   return (
     <div className="min-h-screen bg-beige text-ink">
       <header className="border-b border-maroon/12 bg-cream">
@@ -225,12 +292,25 @@ export default function AdminPage() {
 
             <label className="block">
               <span className="label-caps">Cover image URL</span>
+              <span className="mt-1 block text-sm text-muted">Upload an image or paste a URL</span>
               <input
                 required
                 type="url"
                 value={form.image}
                 onChange={(event) => setForm((current) => ({ ...current, image: event.target.value }))}
                 className="mt-2 w-full border border-maroon/18 bg-beige px-4 py-3 text-sm outline-none focus:border-maroon"
+              />
+            </label>
+
+            <label className="inline-flex cursor-pointer items-center gap-2 border border-maroon/18 px-4 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-maroon transition-colors hover:border-maroon">
+              <Upload size={14} aria-hidden />
+              {uploadingCover ? "Uploading cover..." : "Upload cover image"}
+              <input
+                type="file"
+                accept="image/*"
+                disabled={uploadingCover || saving}
+                onChange={handleCoverUpload}
+                className="sr-only"
               />
             </label>
 
@@ -245,13 +325,26 @@ export default function AdminPage() {
             </label>
 
             <label className="block">
-              <span className="label-caps">Detail image URLs</span>
-              <span className="mt-1 block text-sm text-muted">One URL per line</span>
+              <span className="label-caps">Detail media URLs</span>
+              <span className="mt-1 block text-sm text-muted">One image or video URL per line</span>
               <textarea
                 rows={4}
                 value={form.detailImages}
                 onChange={(event) => setForm((current) => ({ ...current, detailImages: event.target.value }))}
                 className="mt-2 w-full border border-maroon/18 bg-beige px-4 py-3 text-sm outline-none focus:border-maroon"
+              />
+            </label>
+
+            <label className="inline-flex cursor-pointer items-center gap-2 border border-maroon/18 px-4 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-maroon transition-colors hover:border-maroon">
+              <Upload size={14} aria-hidden />
+              {uploadingDetails ? "Uploading media..." : "Upload images/videos"}
+              <input
+                type="file"
+                accept="image/*,video/mp4,video/webm,video/quicktime"
+                multiple
+                disabled={uploadingDetails || saving}
+                onChange={handleDetailUploads}
+                className="sr-only"
               />
             </label>
 
@@ -281,7 +374,7 @@ export default function AdminPage() {
 
             <button
               type="submit"
-              disabled={saving}
+              disabled={saving || uploadingCover || uploadingDetails}
               className="inline-flex items-center gap-2 border border-maroon bg-maroon px-5 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-cream transition-opacity disabled:opacity-60"
             >
               {editingId ? <Pencil size={14} aria-hidden /> : <Plus size={14} aria-hidden />}

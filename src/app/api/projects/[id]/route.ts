@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { Project } from "@/data/content";
-import { getProjects, saveProjects } from "@/lib/projects";
+import { deleteProject, getProjectById, updateProject } from "@/lib/projects";
 
 type RouteContext = {
   params: Promise<{ id: string }>;
@@ -8,8 +8,7 @@ type RouteContext = {
 
 export async function GET(_request: Request, { params }: RouteContext) {
   const { id } = await params;
-  const projects = await getProjects();
-  const project = projects.find((item) => item.id === id);
+  const project = await getProjectById(id);
 
   if (!project) {
     return NextResponse.json({ error: "Project not found." }, { status: 404 });
@@ -22,12 +21,6 @@ export async function PUT(request: Request, { params }: RouteContext) {
   try {
     const { id } = await params;
     const body = (await request.json()) as Omit<Project, "id">;
-    const projects = await getProjects();
-    const index = projects.findIndex((item) => item.id === id);
-
-    if (index === -1) {
-      return NextResponse.json({ error: "Project not found." }, { status: 404 });
-    }
 
     const updated: Project = {
       id,
@@ -39,11 +32,13 @@ export async function PUT(request: Request, { params }: RouteContext) {
       writeup: body.writeup.trim(),
       toolsUsed: body.toolsUsed,
     };
+    const saved = await updateProject(id, updated);
 
-    projects[index] = updated;
-    await saveProjects(projects);
+    if (!saved) {
+      return NextResponse.json({ error: "Project not found." }, { status: 404 });
+    }
 
-    return NextResponse.json(updated);
+    return NextResponse.json(saved);
   } catch {
     return NextResponse.json({ error: "Failed to update project." }, { status: 500 });
   }
@@ -52,14 +47,12 @@ export async function PUT(request: Request, { params }: RouteContext) {
 export async function DELETE(_request: Request, { params }: RouteContext) {
   try {
     const { id } = await params;
-    const projects = await getProjects();
-    const nextProjects = projects.filter((item) => item.id !== id);
+    const deleted = await deleteProject(id);
 
-    if (nextProjects.length === projects.length) {
+    if (!deleted) {
       return NextResponse.json({ error: "Project not found." }, { status: 404 });
     }
 
-    await saveProjects(nextProjects);
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: "Failed to delete project." }, { status: 500 });

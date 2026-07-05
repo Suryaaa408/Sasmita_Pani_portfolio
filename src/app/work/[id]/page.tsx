@@ -12,6 +12,10 @@ type ProjectPageProps = {
   params: Promise<{ id: string }>;
 };
 
+function isVideoUrl(url: string) {
+  return /\.(mp4|webm|mov)(\?.*)?$/i.test(url);
+}
+
 export async function generateMetadata({ params }: ProjectPageProps) {
   const { id } = await params;
   const project = await getProjectById(id);
@@ -80,13 +84,22 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             {project.detailImages.map((image, index) => (
               <figure key={image} className={index === 0 ? "md:col-span-2" : ""}>
                 <div className="relative aspect-[16/10] overflow-hidden border border-maroon/12 bg-sand">
-                  <Image
-                    src={image}
-                    alt={`${project.title} process image ${index + 1}`}
-                    fill
-                    className="object-cover"
-                    sizes={index === 0 ? "100vw" : "(max-width: 768px) 100vw, 50vw"}
-                  />
+                  {isVideoUrl(image) ? (
+                    <video
+                      src={image}
+                      controls
+                      className="h-full w-full object-cover"
+                      aria-label={`${project.title} process video ${index + 1}`}
+                    />
+                  ) : (
+                    <Image
+                      src={image}
+                      alt={`${project.title} process image ${index + 1}`}
+                      fill
+                      className="object-cover"
+                      sizes={index === 0 ? "100vw" : "(max-width: 768px) 100vw, 50vw"}
+                    />
+                  )}
                 </div>
               </figure>
             ))}
