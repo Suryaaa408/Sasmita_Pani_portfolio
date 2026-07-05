@@ -71,6 +71,9 @@ export type Project = {
   category: Exclude<ProjectCategory, "All">;
   image: string;
   alt: string;
+  detailImages: string[];
+  writeup: string;
+  toolsUsed: string[];
 };
 
 export const projects: Project[] = [
@@ -80,6 +83,14 @@ export const projects: Project[] = [
     category: "Character Modeling",
     image: "https://images.unsplash.com/photo-1634986666676-ec8fd927c23d?w=900&h=1200&fit=crop",
     alt: "Moody 3D character study",
+    detailImages: [
+      "https://images.unsplash.com/photo-1634986666676-ec8fd927c23d?w=1200&h=900&fit=crop",
+      "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&h=900&fit=crop",
+      "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=1200&h=900&fit=crop",
+    ],
+    writeup:
+      "A restrained character study focused on silhouette, surface rhythm, and a quiet sense of movement from sketch to final render.",
+    toolsUsed: ["Blender", "ZBrush", "Substance Painter"],
   },
   {
     id: "morning-atelier",
@@ -87,6 +98,14 @@ export const projects: Project[] = [
     category: "Environment & Scenes",
     image: "https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=900&h=1200&fit=crop",
     alt: "Soft abstract architectural render",
+    detailImages: [
+      "https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=1200&h=900&fit=crop",
+      "https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=1200&h=900&fit=crop",
+      "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&h=900&fit=crop",
+    ],
+    writeup:
+      "A soft environment pass shaped around quiet architecture, tonal restraint, and a calm cinematic read across each composition.",
+    toolsUsed: ["Blender", "Unreal Engine", "Substance Painter"],
   },
   {
     id: "heirloom-speaker",
@@ -94,6 +113,14 @@ export const projects: Project[] = [
     category: "Product Visualization",
     image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=900&h=1200&fit=crop",
     alt: "Premium speaker product render",
+    detailImages: [
+      "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=1200&h=900&fit=crop",
+      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&h=900&fit=crop",
+      "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1200&h=900&fit=crop",
+    ],
+    writeup:
+      "A product visualization study balancing material detail, clean silhouette, and editorial lighting for a premium object story.",
+    toolsUsed: ["Blender", "Substance Painter"],
   },
   {
     id: "clay-guardian",
@@ -101,6 +128,14 @@ export const projects: Project[] = [
     category: "Sculpting",
     image: "https://images.unsplash.com/photo-1617791160536-598cf32026fb?w=900&h=1200&fit=crop",
     alt: "Close sculptural digital form",
+    detailImages: [
+      "https://images.unsplash.com/photo-1617791160536-598cf32026fb?w=1200&h=900&fit=crop",
+      "https://images.unsplash.com/photo-1604076913837-52ab5629fba9?w=1200&h=900&fit=crop",
+      "https://images.unsplash.com/photo-1634986666676-ec8fd927c23d?w=1200&h=900&fit=crop",
+    ],
+    writeup:
+      "A sculptural exploration of volume, edge softness, and tactile digital surfaces through iterative form studies.",
+    toolsUsed: ["ZBrush", "Blender"],
   },
   {
     id: "winter-room",
@@ -108,6 +143,14 @@ export const projects: Project[] = [
     category: "Environment & Scenes",
     image: "https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=900&h=1200&fit=crop",
     alt: "Minimal 3D room with geometric forms",
+    detailImages: [
+      "https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=1200&h=900&fit=crop",
+      "https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=1200&h=900&fit=crop",
+      "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1200&h=900&fit=crop",
+    ],
+    writeup:
+      "A minimal room study built around spatial pause, geometric balance, and a muted material palette.",
+    toolsUsed: ["Blender", "Unreal Engine"],
   },
   {
     id: "field-mask",
@@ -115,5 +158,13 @@ export const projects: Project[] = [
     category: "Character Modeling",
     image: "https://images.unsplash.com/photo-1604076913837-52ab5629fba9?w=900&h=1200&fit=crop",
     alt: "Stylized character mask and material study",
+    detailImages: [
+      "https://images.unsplash.com/photo-1604076913837-52ab5629fba9?w=1200&h=900&fit=crop",
+      "https://images.unsplash.com/photo-1617791160536-598cf32026fb?w=1200&h=900&fit=crop",
+      "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=1200&h=900&fit=crop",
+    ],
+    writeup:
+      "A stylized mask and material study emphasizing expressive silhouette, restrained color, and readable surface transitions.",
+    toolsUsed: ["ZBrush", "Blender", "Substance Painter"],
   },
 ];

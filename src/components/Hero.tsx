@@ -51,7 +51,17 @@ export default function Hero() {
             className="mt-8 grid max-w-2xl gap-7 sm:grid-cols-[1fr_auto] sm:items-start"
           >
             <p className="text-lg leading-8 text-muted sm:text-xl">{artist.intro}</p>
-            <p className="border-l border-maroon pl-4 text-sm font-semibold uppercase tracking-[0.18em] text-maroon sm:max-w-[15rem]">
+            <p className="flex items-start gap-3 border-l border-maroon pl-4 text-sm font-semibold uppercase tracking-[0.18em] text-maroon sm:max-w-[15rem]">
+              <motion.span
+                className="relative mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-maroon"
+                aria-hidden
+              >
+                <motion.span
+                  className="absolute inset-0 rounded-full bg-maroon"
+                  animate={{ opacity: [0.45, 0], scale: [1, 2.4] }}
+                  transition={{ duration: 1.8, repeat: Infinity, ease: [0.22, 1, 0.36, 1] }}
+                />
+              </motion.span>
               {artist.status}
             </p>
           </motion.div>

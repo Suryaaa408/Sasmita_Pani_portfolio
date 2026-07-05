@@ -1,8 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { useMemo, useState } from "react";
+import { ArrowUpRight } from "lucide-react";
+import { KeyboardEvent, useMemo, useRef, useState } from "react";
 import { projectCategories, projects, type Project, type ProjectCategory } from "@/data/content";
 import { Reveal } from "@/components/Reveal";
 
@@ -13,7 +15,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
   const rotateY = useSpring(useTransform(x, [-60, 60], [-3, 3]), { stiffness: 180, damping: 22 });
 
   return (
-    <motion.article
+    <motion.div
       layout
       initial={{ opacity: 0, scale: 0.96, y: 22 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -29,37 +31,76 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         x.set(0);
         y.set(0);
       }}
-      className="group relative overflow-hidden border border-maroon/12 bg-cream"
+      className="relative"
     >
-      <div className="relative aspect-[4/5] overflow-hidden bg-sand">
-        <Image
-          src={project.image}
-          alt={project.alt}
-          fill
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-        />
-        <div className="absolute inset-0 border border-transparent bg-maroon/0 transition-all duration-500 group-hover:border-maroon/70 group-hover:bg-maroon/18" />
-      </div>
-      <div className="flex items-end justify-between gap-4 p-5">
-        <div>
-          <h3 className="font-display text-2xl font-semibold text-ink">{project.title}</h3>
-          <p className="mt-2 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-maroon">
-            {project.category}
-          </p>
+      <Link
+        href={`/work/${project.id}`}
+        className="group block overflow-hidden border border-maroon/12 bg-cream focus:outline-none focus:ring-2 focus:ring-maroon/35 focus:ring-offset-4 focus:ring-offset-beige"
+        aria-label={`View project: ${project.title}`}
+      >
+        <div className="relative aspect-[4/5] overflow-hidden bg-sand">
+          <Image
+            src={project.image}
+            alt={project.alt}
+            fill
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07] group-focus-visible:scale-[1.07]"
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+          />
+          <div className="absolute inset-0 border border-transparent bg-maroon/0 transition-all duration-500 group-hover:border-maroon/70 group-hover:bg-maroon/28 group-focus-visible:border-maroon/70 group-focus-visible:bg-maroon/28" />
+          <div className="absolute inset-x-5 bottom-5 flex translate-y-3 items-center justify-between gap-4 opacity-0 transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
+            <span className="inline-flex items-center gap-2 bg-cream px-4 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-maroon">
+              View project
+              <ArrowUpRight size={15} aria-hidden />
+            </span>
+            <span className="text-sm font-semibold text-cream">0{index + 1}</span>
+          </div>
         </div>
-        <span className="text-xs font-semibold text-muted">0{index + 1}</span>
-      </div>
-    </motion.article>
+        <div className="flex items-end justify-between gap-4 p-5">
+          <div>
+            <h3 className="font-display text-2xl font-semibold text-ink">{project.title}</h3>
+            <p className="mt-2 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-maroon transition-colors group-hover:text-maroon-soft">
+              {project.category}
+            </p>
+          </div>
+          <span className="text-xs font-semibold text-muted transition-colors group-hover:text-maroon">0{index + 1}</span>
+        </div>
+      </Link>
+    </motion.div>
   );
 }
 
 export default function Work() {
   const [active, setActive] = useState<ProjectCategory>("All");
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const filtered = useMemo(
     () => (active === "All" ? projects : projects.filter((project) => project.category === active)),
     [active],
   );
+
+  const handleTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (!["ArrowRight", "ArrowLeft", "Home", "End"].includes(event.key)) {
+      return;
+    }
+
+    event.preventDefault();
+    const lastIndex = projectCategories.length - 1;
+    const nextIndex =
+      event.key === "Home"
+        ? 0
+        : event.key === "End"
+          ? lastIndex
+          : event.key === "ArrowRight"
+            ? index === lastIndex
+              ? 0
+              : index + 1
+            : index === 0
+              ? lastIndex
+              : index - 1;
+    const nextCategory = projectCategories[nextIndex];
+
+    setActive(nextCategory);
+    tabRefs.current[nextIndex]?.focus();
+  };
 
   return (
     <section id="work" className="bg-beige">
@@ -79,10 +120,15 @@ export default function Work() {
               {projectCategories.map((category) => (
                 <button
                   key={category}
+                  ref={(node) => {
+                    tabRefs.current[projectCategories.indexOf(category)] = node;
+                  }}
                   type="button"
                   role="tab"
                   aria-selected={active === category}
+                  tabIndex={active === category ? 0 : -1}
                   onClick={() => setActive(category)}
+                  onKeyDown={(event) => handleTabKeyDown(event, projectCategories.indexOf(category))}
                   className={`relative overflow-hidden border px-4 py-3 text-left text-[0.68rem] font-semibold uppercase tracking-[0.16em] transition-colors ${
                     active === category
                       ? "border-maroon text-cream"
