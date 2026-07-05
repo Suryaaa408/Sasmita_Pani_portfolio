@@ -7,9 +7,10 @@
   --color-cream: #fffaf2;
   --color-sand: #e8dcc8;
   --color-ink: #1d1111;
+  --color-ink-soft: #241918;
   --color-muted: #766b63;
   --font-sans: "Neue Haas Grotesk Text", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Neue Haas Grotesk Display", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces", "Playfair Display", Georgia, "Times New Roman", ui-serif, serif;
 }
 
 @layer base {
@@ -37,12 +38,18 @@
   }
 
   .display-title {
-    font-family: "Neue Haas Grotesk Display", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
-    @apply text-[clamp(3.2rem,9.5vw,8.5rem)] font-semibold leading-[0.88] tracking-normal;
+    font-family: var(--font-display);
+    @apply text-[4rem] font-semibold leading-[0.9] tracking-normal text-ink-soft sm:text-[5.6rem] lg:text-[6.9rem];
   }
 
   .section-title {
-    font-family: "Neue Haas Grotesk Display", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-display);
     @apply text-[clamp(2.25rem,5.5vw,5.25rem)] font-semibold leading-[0.92] tracking-normal;
+  }
+
+  .hero-grain {
+    background-image:
+      radial-gradient(circle at 1px 1px, rgb(92 26 27 / 0.13) 1px, transparent 0);
+    background-size: 18px 18px;
   }
 }
