@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { Project } from "@/data/content";
+import { requireAdminAuth } from "@/lib/adminAuth";
 import { createProject, createProjectId, getProjects } from "@/lib/projects";
 
 export async function GET() {
@@ -8,6 +9,12 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const authError = await requireAdminAuth();
+
+  if (authError) {
+    return authError;
+  }
+
   try {
     const body = (await request.json()) as Omit<Project, "id"> & { id?: string };
     const projects = await getProjects();

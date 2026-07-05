@@ -12,10 +12,15 @@ export const artist = {
     "Hi, I'm Sasmita Pani, a passionate 3D Artist who believes that great design is more than creating visually appealing assets—it's about crafting experiences that connect with people. I approach every project with curiosity, creativity, and a constant desire to learn, turning ideas into immersive digital worlds.",
     "With a strong foundation in 3D Modeling, Texturing, and Sculpting, I enjoy transforming concepts into detailed and believable visuals. My curiosity drives me to continuously refine my skills, explore new techniques, and stay inspired by the ever-evolving world of digital art.",
   ],
-  email: "hello@sasmitamishra.com",
+  email: "sasmita.pani048@gmail.com",
   socials: [
-    { name: "Instagram", href: "https://instagram.com", handle: "@sasmita.3d" },
-    { name: "LinkedIn", href: "https://linkedin.com", handle: "Sasmita Mishra" },
+    { name: "Behance", href: "https://www.behance.net/sasmitapani2", handle: "sasmitapani2" },
+    { name: "LinkedIn", href: "https://www.linkedin.com/in/sasmita-pani-b3536033b/", handle: "Sasmita Pani" },
+    {
+      name: "Instagram",
+      href: "https://www.instagram.com/unico_iuova?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==",
+      handle: "@unico_iuova",
+    },
   ],
 };
 

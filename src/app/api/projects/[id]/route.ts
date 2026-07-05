@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { Project } from "@/data/content";
+import { requireAdminAuth } from "@/lib/adminAuth";
 import { deleteProject, getProjectById, updateProject } from "@/lib/projects";
 
 type RouteContext = {
@@ -18,6 +19,12 @@ export async function GET(_request: Request, { params }: RouteContext) {
 }
 
 export async function PUT(request: Request, { params }: RouteContext) {
+  const authError = await requireAdminAuth();
+
+  if (authError) {
+    return authError;
+  }
+
   try {
     const { id } = await params;
     const body = (await request.json()) as Omit<Project, "id">;
@@ -45,6 +52,12 @@ export async function PUT(request: Request, { params }: RouteContext) {
 }
 
 export async function DELETE(_request: Request, { params }: RouteContext) {
+  const authError = await requireAdminAuth();
+
+  if (authError) {
+    return authError;
+  }
+
   try {
     const { id } = await params;
     const deleted = await deleteProject(id);

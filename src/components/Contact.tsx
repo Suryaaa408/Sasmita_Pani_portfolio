@@ -1,12 +1,13 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { BriefcaseBusiness, Camera, LoaderCircle, Send } from "lucide-react";
+import { BriefcaseBusiness, Camera, LoaderCircle, Palette, Send } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { artist } from "@/data/content";
 import { Reveal } from "@/components/Reveal";
 
 const socialIcons = {
+  Behance: Palette,
   Instagram: Camera,
   LinkedIn: BriefcaseBusiness,
 };

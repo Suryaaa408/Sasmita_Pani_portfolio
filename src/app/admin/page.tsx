@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ChangeEvent, FormEvent, useCallback, useEffect, useState } from "react";
-import { ArrowLeft, Pencil, Plus, Trash2, Upload } from "lucide-react";
+import { ChangeEvent, FormEvent, ReactNode, useCallback, useEffect, useState } from "react";
+import { ArrowLeft, LockKeyhole, LogOut, Pencil, Plus, Trash2, Upload } from "lucide-react";
 import { projectCategories, type Project } from "@/data/content";
 
 type ProjectFormState = {
@@ -29,6 +29,8 @@ const emptyForm = (): ProjectFormState => ({
 const categoryOptions = projectCategories.filter(
   (category): category is Exclude<(typeof projectCategories)[number], "All"> => category !== "All",
 );
+
+type AuthStatus = "checking" | "authenticated" | "unauthenticated";
 
 function projectToForm(project: Project): ProjectFormState {
   return {
@@ -79,6 +81,10 @@ async function uploadProjectFile(file: File, folder: string) {
 }
 
 export default function AdminPage() {
+  const [authStatus, setAuthStatus] = useState<AuthStatus>("checking");
+  const [password, setPassword] = useState("");
+  const [loggingIn, setLoggingIn] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
   const [form, setForm] = useState<ProjectFormState>(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -108,8 +114,81 @@ export default function AdminPage() {
   }, []);
 
   useEffect(() => {
-    loadProjects();
+    let active = true;
+
+    async function checkSession() {
+      try {
+        const response = await fetch("/api/admin/session", { cache: "no-store" });
+        const data = (await response.json()) as { authenticated?: boolean };
+
+        if (!active) {
+          return;
+        }
+
+        if (response.ok && data.authenticated) {
+          setAuthStatus("authenticated");
+          await loadProjects();
+          return;
+        }
+      } catch {
+        // Fall through to the login view.
+      }
+
+      if (active) {
+        setAuthStatus("unauthenticated");
+        setLoading(false);
+      }
+    }
+
+    checkSession();
+
+    return () => {
+      active = false;
+    };
   }, [loadProjects]);
+
+  const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setLoggingIn(true);
+    setError(null);
+    setMessage(null);
+
+    try {
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      const data = (await response.json()) as { error?: string };
+
+      if (!response.ok) {
+        throw new Error(data.error ?? "Could not log in.");
+      }
+
+      setPassword("");
+      setAuthStatus("authenticated");
+      await loadProjects();
+    } catch (loginError) {
+      setError(loginError instanceof Error ? loginError.message : "Could not log in.");
+    } finally {
+      setLoggingIn(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    setError(null);
+    setMessage(null);
+
+    try {
+      await fetch("/api/admin/logout", { method: "POST" });
+    } finally {
+      resetForm();
+      setProjects([]);
+      setAuthStatus("unauthenticated");
+      setLoggingOut(false);
+    }
+  };
 
   const resetForm = () => {
     setForm(emptyForm());
@@ -133,6 +212,9 @@ export default function AdminPage() {
 
       if (!response.ok) {
         const data = (await response.json()) as { error?: string };
+        if (response.status === 401) {
+          setAuthStatus("unauthenticated");
+        }
         throw new Error(data.error ?? "Failed to save project.");
       }
 
@@ -165,6 +247,9 @@ export default function AdminPage() {
     try {
       const response = await fetch(`/api/projects/${id}`, { method: "DELETE" });
       if (!response.ok) {
+        if (response.status === 401) {
+          setAuthStatus("unauthenticated");
+        }
         throw new Error("Failed to delete project.");
       }
 
@@ -226,7 +311,7 @@ export default function AdminPage() {
     }
   };
 
-  return (
+  const authShell = (content: ReactNode) => (
     <div className="min-h-screen bg-beige text-ink">
       <header className="border-b border-maroon/12 bg-cream">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-5 sm:px-8">
@@ -241,6 +326,84 @@ export default function AdminPage() {
             <ArrowLeft size={15} aria-hidden />
             Back to site
           </Link>
+        </div>
+      </header>
+      {content}
+    </div>
+  );
+
+  if (authStatus === "checking") {
+    return authShell(
+      <main className="mx-auto flex max-w-6xl px-5 py-16 sm:px-8">
+        <p className="text-sm text-muted">Checking admin session...</p>
+      </main>,
+    );
+  }
+
+  if (authStatus === "unauthenticated") {
+    return authShell(
+      <main className="mx-auto flex max-w-6xl px-5 py-10 sm:px-8">
+        <section className="w-full max-w-md border border-maroon/12 bg-cream p-6 sm:p-8">
+          <div className="mb-6">
+            <LockKeyhole className="mb-4 text-maroon" size={28} aria-hidden />
+            <h2 className="text-xl font-semibold text-ink">Admin Login</h2>
+          </div>
+
+          <form className="space-y-5" onSubmit={handleLogin}>
+            <label className="block">
+              <span className="label-caps">Password</span>
+              <input
+                required
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                className="mt-2 w-full border border-maroon/18 bg-beige px-4 py-3 text-sm outline-none focus:border-maroon"
+                autoComplete="current-password"
+              />
+            </label>
+
+            {error && <p className="text-sm font-medium text-red-700">{error}</p>}
+
+            <button
+              type="submit"
+              disabled={loggingIn}
+              className="inline-flex items-center gap-2 border border-maroon bg-maroon px-5 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-cream transition-opacity disabled:opacity-60"
+            >
+              <LockKeyhole size={14} aria-hidden />
+              {loggingIn ? "Logging in..." : "Log in"}
+            </button>
+          </form>
+        </section>
+      </main>,
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-beige text-ink">
+      <header className="border-b border-maroon/12 bg-cream">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-5 sm:px-8">
+          <div>
+            <p className="label-caps">Admin</p>
+            <h1 className="mt-2 font-display text-3xl font-semibold text-maroon">Project Manager</h1>
+          </div>
+          <div className="flex flex-wrap items-center justify-end gap-3">
+            <button
+              type="button"
+              onClick={handleLogout}
+              disabled={loggingOut}
+              className="inline-flex items-center gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-maroon transition-opacity disabled:opacity-60"
+            >
+              <LogOut size={15} aria-hidden />
+              {loggingOut ? "Logging out..." : "Log out"}
+            </button>
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-maroon transition-colors hover:text-maroon-soft"
+            >
+              <ArrowLeft size={15} aria-hidden />
+              Back to site
+            </Link>
+          </div>
         </div>
       </header>
 

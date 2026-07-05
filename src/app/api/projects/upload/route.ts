@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireAdminAuth } from "@/lib/adminAuth";
 import { getProjectStorageBucket, getSupabaseAdmin, slugify } from "@/lib/projects";
 
 const allowedMimeTypes = new Set([
@@ -19,6 +20,12 @@ function extensionFromFile(file: File) {
 }
 
 export async function POST(request: Request) {
+  const authError = await requireAdminAuth();
+
+  if (authError) {
+    return authError;
+  }
+
   const supabase = getSupabaseAdmin();
 
   if (!supabase) {
